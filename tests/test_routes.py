@@ -14,43 +14,43 @@ from service.routes import app, reset_counters
 #  T E S T   C A S E S
 ######################################################################
 class CounterTest(TestCase):
-    """ REST API Server Tests """
+    """REST API Server Tests"""
 
     @classmethod
     def setUpClass(cls):
-        """ This runs once before the entire test suite """
+        """This runs once before the entire test suite"""
         app.testing = True
 
     @classmethod
     def tearDownClass(cls):
-        """ This runs once after the entire test suite """
+        """This runs once after the entire test suite"""
         pass
 
     def setUp(self):
-        """ This runs before each test """
+        """This runs before each test"""
         reset_counters()
         self.app = app.test_client()
 
     def tearDown(self):
-        """ This runs after each test """
+        """This runs after each test"""
         pass
 
-######################################################################
-#  T E S T   C A S E S
-######################################################################
+    ######################################################################
+    #  T E S T   C A S E S
+    ######################################################################
 
     def test_index(self):
-        """ It should call the index call """
+        """It should call the index call"""
         resp = self.app.get("/")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
 
     def test_health(self):
-        """ It should be healthy """
+        """It should be healthy"""
         resp = self.app.get("/health")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
 
     def test_create_counters(self):
-        """ It should Create a counter """
+        """It should Create a counter"""
         name = "foo"
         resp = self.app.post(f"/counters/{name}")
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
@@ -59,7 +59,7 @@ class CounterTest(TestCase):
         self.assertEqual(data["counter"], 0)
 
     def test_create_duplicate_counter(self):
-        """ It should not Create a duplicate counter """
+        """It should not Create a duplicate counter"""
         name = "foo"
         resp = self.app.post(f"/counters/{name}")
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
@@ -70,7 +70,7 @@ class CounterTest(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_409_CONFLICT)
 
     def test_list_counters(self):
-        """ It should List counters """
+        """It should List counters"""
         resp = self.app.get("/counters")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
@@ -83,7 +83,7 @@ class CounterTest(TestCase):
         self.assertEqual(len(data), 1)
 
     def test_read_counters(self):
-        """ It should Read a counter """
+        """It should Read a counter"""
         name = "foo"
         self.app.post(f"/counters/{name}")
         resp = self.app.get(f"/counters/{name}")
@@ -93,7 +93,7 @@ class CounterTest(TestCase):
         self.assertEqual(data["counter"], 0)
 
     def test_update_counters(self):
-        """ It should Update a counter """
+        """It should Update a counter"""
         name = "foo"
         resp = self.app.post(f"/counters/{name}")
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
@@ -111,13 +111,13 @@ class CounterTest(TestCase):
         self.assertEqual(data["counter"], 1)
 
     def test_update_missing_counters(self):
-        """ It should not Update a missing counter """
+        """It should not Update a missing counter"""
         name = "foo"
         resp = self.app.put(f"/counters/{name}")
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_delete_counters(self):
-        """ It should Delete a counter """
+        """It should Delete a counter"""
         name = "foo"
         # Create a counter
         resp = self.app.post(f"/counters/{name}")
